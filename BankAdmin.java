@@ -1,8 +1,19 @@
 package com.allisonrodenbaugh.springboothelloworld;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Scanner;
 
+/**
+ * <h1>Functionality for Bank Administrators</h1>
+ * The BankAdmin class implements the functionality that bank admin
+ * select through the controller's UI.
+ * <p>
+ * <b>Note:</b> This class does not take user input directly but simply performs
+ *  calculations/procedures that the user chose through the UI controller.
+ *
+ * @author  Allison Rodenbaugh
+ * @version 1.0
+ * @since   Fall 2018
+ */
 public class BankAdmin {
 
     ArrayList<Customer> customerList = new ArrayList<Customer>();
@@ -10,146 +21,79 @@ public class BankAdmin {
     ArrayList<Loan> loanList = new ArrayList<Loan>();
     private float currentLoanRate;
 
+    /**
+     * Adds Customer object to Customer ArrayList.
+     * @param customer the customer Object to add to the list.
+     */
     public void addToCustomerList(Customer customer)
     {
         customerList.add(customer);
     }
-    public void addToLoanList(Loan loan)
-    {
-        loanList.add(loan);
-    }
-    public ArrayList<Customer> getCustomerList()
-    {
-        return customerList;
-    }
+    /**
+     * Adds Loan object to loan ArrayList.
+     * @param loan The loan Object to add to the list.
+     */
+    public void addToLoanList(Loan loan) { loanList.add(loan); }
+    /**
+     * Adds account object to account ArrayList.
+     * @param account The account Object to add to the list.
+     */
     public void addToAccountList(Account account)
     {
         accountList.add(account);
     }
-    public ArrayList<Account> getAccountList()
-    {
-        return accountList;
-    }
-    public void setCurrentLoanRate(float currentLoanRate)
-    {
-        this.currentLoanRate = currentLoanRate;
-    }
-    public float getCurrentLoanRate()
-    {
-        return currentLoanRate;
-    }
-    public static int getIntInput()
-    {
-        Scanner input = new Scanner(System.in);
-        return input.nextInt();
-    }
-    public static String getStringInput()
-    {
-        Scanner input = new Scanner(System.in);
-        String user_input = input.nextLine();
-        //input.close();
-        return user_input;
-    }
+
+    /**
+     * Retrieves name of customer using their ID.
+     * Used for Confirmation/display purposes.
+     * @param customerID the customerID for the Customer object
+     * @return String depicting if customer exists in system.
+     *
+     */
     public String getCustomerName(int customerID)
     {
-        String name = "";
-        for(Customer customer : customerList) {
-            if(customer.getCustomerID() == customerID)
-            { name = customer.getName();}
-            else { name = "Customer does not exist";}
-        }return name;
-    }
-
-    public void addNewCustomer()
-    {
-        // Create customer object
-        System.out.println("Enter Customer name: ");
-        String name = getStringInput();
-        Customer newCust = new Customer(name);
-
-        // Add customer information to object
-        System.out.println("Enter Customer phone number: ");
-        newCust.setPhoneNo(getStringInput());
-
-        System.out.println("Enter Address street: ");
-        newCust.address.setStreet(getStringInput());
-
-        System.out.println("Enter Address city: ");
-        newCust.address.setCity(getStringInput());
-
-        System.out.println("Enter Address state: ");
-        newCust.address.setState(getStringInput());
-
-        System.out.println("Enter Address zipcode: ");
-        newCust.address.setZipcode(getIntInput());
-
-        //Add new customer to customerList
-        this.addToCustomerList(newCust);
-
-        newCust.printCustomer(); //testing purposes
-    }
-
-    public void printAccountDetails(int accountID)
-    {
-        for(Account account : accountList)
+        String name;
+        Customer customer = findCustomer(customerID);
+        if(customer != null)
         {
-            if(account.getAccountID() == accountID)
-            {
-                System.out.println("AccountID: " + account.getAccountID());
-                System.out.println("Account type: " + account.getAccountType());
-                System.out.println("Account owner: " + getCustomerName(account.getCustomerID()));
-                System.out.println("Account balance: " + account.getBalance());
-            }
+            name = customer.getName();
         }
-    }
-    public void printLoanDetails(int loanID)
-    {
-        for(Loan loan : loanList)
+        else
         {
-            if(loan.getLoanID() == loanID)
-            {
-                System.out.println("LoanID: " + loan.getLoanID());
-                System.out.println("Loan owner: " + getCustomerName(loan.getCustomerID()));
-                System.out.println("Loan amount: " + loan.getLoanAmount());
-                System.out.println("Loan interest rate: " + loan.getInterestRate());
-            }
+            name = "Customer does not exist";
         }
+        return name;
     }
 
-    public void addSavingsAccount(int customerID, float balance)
+    /**
+     * Creates new account and adds to customer.
+     * @param customer the customer Object to add an account to.
+     * @param balance the initial balance of the account.
+     * @param accountType the type of the account - checking/savings.
+     */
+    public void addAccountToCustomer(Customer customer, float balance, int accountType)
     {
-        for(Customer customer : customerList)
-        {
-            if(customer.getCustomerID() == customerID)
-            {
-                SavingsAccount account = customer.addSavingsAccount(balance); //returns account
-                addToAccountList(account);
-            }
-        }
+        Account account = customer.addAccount(balance, accountType); //returns account
+        addToAccountList(account);
     }
-    public void addCheckingAccount(int customerID, float balance)
+    /**
+     * Creates new account and adds to customer.
+     * @param customer the customer Object to add a loan to.
+     * @param loanAmount the initial amount of the loan.
+     * @param loanType the type of the loan.
+     */
+    public void addLoanToCustomer(Customer customer, float loanAmount, String loanType)
     {
-        for(Customer customer : customerList)
-        {
-            if(customer.getCustomerID() == customerID)
-            {
-                CheckingAccount account = customer.addCheckingAccount(balance); //returns account
-                addToAccountList(account);
-            }
-        }
+        Loan loan = customer.addLoan(loanAmount, loanType); //returns loan
+        loan.setInterestRate(1.09); // for testing purposes
+        addToLoanList(loan);
+
     }
-    public void addLoan(int customerID, float loanAmount)
-    {
-        for(Customer customer : customerList)
-        {
-            if(customer.getCustomerID() == customerID)
-            {
-                Loan loan = customer.addLoan(loanAmount); //returns account
-                loan.setInterestRate(1.09); // for testing purposes
-                addToLoanList(loan);
-            }
-        }
-    }
+    /**
+     * Finds and returns a loan object given a loan ID.
+     * @param loanID the id of the Loan to search for.
+     * @return the loan object with the loanID.
+     */
     public Loan findLoan(int loanID)
     {
         for(Iterator<Loan> iterator = loanList.iterator(); iterator.hasNext(); ) {
@@ -161,7 +105,11 @@ public class BankAdmin {
         }
         return null;
     }
-
+    /**
+     * Finds and returns an account object given an account ID.
+     * @param accountID the id of the account to search for.
+     * @return the account object with the accountID.
+     */
     public Account findAccount(int accountID)
     {
         for(Iterator<Account> iterator = accountList.iterator(); iterator.hasNext(); ) {
@@ -173,9 +121,85 @@ public class BankAdmin {
         }
         return null;
     }
+    /**
+     * Finds and returns a customer object given a customer ID.
+     * @param customerID the id of the Customer to search for.
+     * @return the customer object with the customerID.
+     */
+    public Customer findCustomer(int customerID)
+    {
+        for(Iterator<Customer> iterator = customerList.iterator(); iterator.hasNext(); ) {
+            Customer customer = iterator.next();
+            if(customer.getCustomerID() == customerID)
+            {
+                return customer;
+            }
+        }
+        return null;
+    }
+    /**
+     * Removes an account from the system.
+     * @param account the account object to remove from the system.
+     */
+    public void removeAccount(Account account) {
+        accountList.remove(account);
 
+    }
+    /**
+     * Removes a loan from the system.
+     * @param loan the loan object to remove from the system.
+     */
+    public void removeLoan(Loan loan){
+        loanList.remove(loan);
+    }
+
+    /**
+     * Removes a customer from the system.
+     * Also will remove corresponding accounts/loans for the customer.
+     * @param customer the customer object to remove from the system.
+     */
+    public void removeCustomer(Customer customer)
+    {
+        customerList.remove(customer);
+        System.out.println("Customer " + customer.getName() + "with ID '" + customer.getCustomerID() + "' has been removed.");
+
+        // remove existing accounts the customer may have
+        ArrayList<Account> toRemove = new ArrayList<>();
+        for(Iterator<Account> iterator2 = accountList.iterator(); iterator2.hasNext(); ) {
+            Account current2 = iterator2.next();
+            if(current2.getCustomerID() == customer.getCustomerID())
+            {
+                System.out.println("Corresponding account with ID '" + current2.getAccountID() + "' has been removed.");
+                toRemove.add(current2);
+            }
+        }
+        for (Account acc: toRemove)
+        {
+            removeAccount(acc);
+        }
+
+        // remove existing loan accounts the customer may have
+        ArrayList<Loan> willRemove = new ArrayList<>();
+        for(Iterator<Loan> iterator3 = loanList.iterator(); iterator3.hasNext(); ) {
+            Loan current3 = iterator3.next();
+            if(current3.getCustomerID() == customer.getCustomerID())
+            {
+                System.out.println("Corresponding loan with ID '" + current3.getLoanID() + "' has been removed.");
+                willRemove.add(current3);
+            }
+        }
+        for (Loan loan: willRemove)
+        {
+            removeLoan(loan);
+        }
+    }
+    /**
+     * Print out all of the accounts corresponding to a customer.
+     * @param  customerID the customer ID corresponding to the accounts.
+     */
     public void printCustomerAccounts(int customerID)
     {
+        String custName = getCustomerName(customerID);
         ArrayList<Account> customerAccounts = new ArrayList<Account>();
         for(Iterator<Account> iterator = accountList.iterator(); iterator.hasNext(); ) {
             Account account = iterator.next();
@@ -187,51 +211,9 @@ public class BankAdmin {
         Iterator<Account> iter = customerAccounts.iterator();
         while (iter.hasNext()) {
             Account accountToPrint = iter.next();
-            printAccountDetails(accountToPrint.getAccountID());
+            System.out.println("Account owner: " + custName);
+            accountToPrint.printAccountDetails();
         }
     }
 
-    public void removeAccount(int accountID)
-    {
-        Account account = findAccount(accountID);
-        if(account != null)
-        {
-            accountList.remove(account);
-            System.out.println("Account with ID '" + accountID + "' has been removed.");
-        }
-        else
-        {
-            System.out.println("Account with ID '" + accountID + "' does not exist");
-        }
-    }
-    public void removeCustomer(int customerID)
-    {
-        // Loop through customer list to remove customer
-        for(Iterator<Customer> iterator = customerList.iterator(); iterator.hasNext(); ) {
-            Customer current = iterator.next();
-            if(current.getCustomerID() == customerID)
-            {
-                iterator.remove();
-                System.out.println("Customer with ID '" + current.getCustomerID() + "' has been removed.");
-            }
-        }
-        // remove existing accounts the customer may have
-        for(Iterator<Account> iterator2 = accountList.iterator(); iterator2.hasNext(); ) {
-            Account current2 = iterator2.next();
-            if(current2.getCustomerID() == customerID)
-            {
-                System.out.println("Corresponding account with ID '" + current2.getAccountID() + "' has been removed.");
-                iterator2.remove();
-            }
-        }
-        // remove existing loan accounts the customer may have
-        for(Iterator<Loan> iterator3 = loanList.iterator(); iterator3.hasNext(); ) {
-            Loan current3 = iterator3.next();
-            if(current3.getCustomerID() == customerID)
-            {
-                System.out.println("Corresponding loan with ID '" + current3.getLoanID() + "' has been removed.");
-                iterator3.remove();
-            }
-        }
-    }
 }

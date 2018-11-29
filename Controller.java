@@ -1,46 +1,97 @@
 package com.allisonrodenbaugh.springboothelloworld;
-import java.util.ArrayList;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.Scanner;
 
+/**
+ * <h1>Main Controller Class</h1>
+ * The Controller class displays the roles for the user to select
+ * and contains functions for gathering user input.
+ * <p>
+ * <b>Note:</b> This class acts as the main controller class.
+ *              The application uses the Spring framework.
+ *
+ * @author  Allison Rodenbaugh
+ * @version 1.0
+ * @since   Fall 2018
+ */
+@SpringBootApplication
 public class Controller {
-
+    /**
+     * Loads Default data into the system
+     * @param admin The bank admin object.
+     *              Keeps track of existing customers/accounts
+     */
     public static void loadDefaultData(BankAdmin admin)
     {
         // Add some customers
         Customer custOne = new Customer("John Doe");
-        Customer custTwo = new Customer("Jack Reaper");
-        Customer custThree = new Customer("Alice Shwab");
-        Customer custFour = new Customer("Megan Turtle");
+        System.out.println("Customer generated. ID: " + custOne.getCustomerID());
+        //Customer custTwo = new Customer("Jack Reaper");
+        //System.out.println("Customer generated. ID: " + custTwo.getCustomerID());
+        //Customer custThree = new Customer("Alice Shwab");
+        //System.out.println("Customer generated. ID: " + custThree.getCustomerID());
+        //Customer custFour = new Customer("Megan Turtle");
+        //System.out.println("Customer generated. ID: " + custFour.getCustomerID());
 
         // Add accounts to customers
         Account acctOne = new SavingsAccount(custOne.getCustomerID());
-        Account acctTwo = new SavingsAccount(custTwo.getCustomerID());
-        Account acctThree = new CheckingAccount(custThree.getCustomerID());
-        Account acctFour = new CheckingAccount(custFour.getCustomerID());
+        System.out.println("account generated. ID: " + acctOne.getAccountID() + ". Type: " + acctOne.getAccountType());
+        Account acctOne1 = new CheckingAccount(custOne.getCustomerID());
+        System.out.println("account generated. ID: " + acctOne1.getAccountID() + ". Type: " + acctOne1.getAccountType());
+        //Account acctTwo = new SavingsAccount(custTwo.getCustomerID());
+        //System.out.println("account generated. ID: " + acctTwo.getAccountID() + ". Type: " + acctTwo.getAccountType());
+        //Account acctTwo1 = new CheckingAccount(custTwo.getCustomerID());
+        //System.out.println("account generated. ID: " + acctTwo1.getAccountID() + ". Type: " + acctTwo1.getAccountType());
+        //Account acctThree = new SavingsAccount(custThree.getCustomerID());
+        //System.out.println("account generated. ID: " + acctThree.getAccountID() + ". Type: " + acctThree.getAccountType());
+       // Account acctThree1 = new CheckingAccount(custThree.getCustomerID());
+        //System.out.println("account generated. ID: " + acctThree1.getAccountID() + ". Type: " + acctThree1.getAccountType());
+        //Account acctFour = new SavingsAccount(custFour.getCustomerID());
+        //System.out.println("account generated. ID: " + acctFour.getAccountID() + ". Type: " + acctFour.getAccountType());
+        //Account acctFour1 = new CheckingAccount(custFour.getCustomerID());
+        //System.out.println("account generated. ID: " + acctFour1.getAccountID() + ". Type: " + acctFour1.getAccountType());
 
         // Set balance of default accounts
         acctOne.setBalance(100);
-        acctTwo.setBalance(200);
-        acctThree.setBalance(300);
-        acctFour.setBalance(400);
+        acctOne1.setBalance(101);
+        //acctTwo.setBalance(200);
+        //acctTwo1.setBalance(201);
+        //acctThree.setBalance(300);
+        //acctThree1.setBalance(301);
+        //acctFour.setBalance(400);
+        //acctFour1.setBalance(401);
 
         // Create default customerlist
         admin.addToCustomerList(custOne);
-        admin.addToCustomerList(custTwo);
-        admin.addToCustomerList(custThree);
-        admin.addToCustomerList(custFour);
+        //admin.addToCustomerList(custTwo);
+        //admin.addToCustomerList(custThree);
+        //admin.addToCustomerList(custFour);
 
         // Create default accountlist
         admin.addToAccountList(acctOne);
-        admin.addToAccountList(acctTwo);
-        admin.addToAccountList(acctThree);
-        admin.addToAccountList(acctFour);
+        //admin.addToAccountList(acctTwo);
+        //admin.addToAccountList(acctThree);
+        //admin.addToAccountList(acctFour);
+        admin.addToAccountList(acctOne1);
+        //admin.addToAccountList(acctTwo1);
+        //admin.addToAccountList(acctThree1);
+        //admin.addToAccountList(acctFour1);
     }
+
+    /**
+     * Gets an integer input from the user.
+     * @return a user-inputted integer.
+     */
     public static int getIntInput()
     {
         Scanner input = new Scanner(System.in);
         return input.nextInt();
     }
+    /**
+     * Gets a String input from the user.
+     * @return a user-inputted string.
+     */
     public static String getStringInput()
     {
         Scanner input = new Scanner(System.in);
@@ -48,144 +99,36 @@ public class Controller {
         //input.close();
         return user_input;
     }
-
-
-    public static void customerActions(BankAdmin admin)
+    /**
+     * Displays invalid Account IK error.
+     * @param accountID The user-inputted ID for the account
+     */
+    public static void invalidAccount(int accountID)
     {
-        // Display customer menu
-        System.out.println("Select a Customer Action:");
-        System.out.println("1. Made deposit");
-        System.out.println("2. Make withdrawal");
-        System.out.println("3. Make transfer");
-        System.out.println("4. Make loan payment");
-        System.out.println("5. View account balances");
-
-        int action = getIntInput();
-        switch(action) {
-            case 1:
-                System.out.println("deposit chosen");
-                break;
-            case 2:
-                System.out.println("withdrawal chosen");
-                break;
-            case 3:
-                System.out.println("transfer chosen");
-                break;
-            //etc.
-            // View account balances
-            case 5:
-                System.out.println("Enter CustomerID for the checking account: ");
-                int custID = getIntInput();
-                admin.printCustomerAccounts(custID);
-                break;
-            default:
-                System.out.println("Invalid action.");
-                break;
-        }
+        System.out.println("Account with ID '" + accountID + "' does not exist.");
+    }
+    /**
+     * Displays invalid Loan ID error.
+     * @param loanID The user-inputted ID for the loan
+     */
+    public static void invalidLoan(int loanID)
+    {
+        System.out.println("Loan with ID '" + loanID + "' does not exist.");
+    }
+    /**
+     * Displays invalid Customer ID error.
+     * @param custID The user-inputted ID for the customer
+     */
+    public static void invalidCustomer(int custID)
+    {
+        System.out.println("Customer with ID '" + custID + "' does not exist.");
     }
 
-    public static void adminActions(BankAdmin admin)
-    {
-        System.out.println("Select a Bank Admin action: ");
-        System.out.println("1. Add a new customer");
-        System.out.println("2. Add account to existing customer");
-        System.out.println("3. Remove account from existing customer");
-        System.out.println("4. Remove customer from system");
-        System.out.println("5. Add loan to existing customer");
-        System.out.println("6. View an accounts details");
-        System.out.println("7. View a loans details");
-        System.out.println("8. Apply interest rates to an account");
-
-        // Get user input
-        int action = getIntInput();
-        switch(action) {
-            // Add new customer
-            case 1:
-                admin.addNewCustomer();
-                break;
-
-            // Add account to customer
-            case 2:
-                System.out.println("Select Checking or Savings: ");
-                System.out.println("1. Add Checking Account");
-                System.out.println("2. Add Savings Account");
-                int choice = getIntInput();
-                switch(choice) {
-                    case 1:
-                        System.out.println("Enter CustomerID for the checking account: ");
-                        int custID = getIntInput();
-                        System.out.println("Enter balance for the checking account: ");
-                        float balance = getIntInput();
-                        admin.addCheckingAccount(custID, balance);
-                        break;
-                    case 2:
-                        System.out.println("Enter CustomerID for the savings account: ");
-                        int custID_2 = getIntInput();
-                        System.out.println("Enter balance for the savings account: ");
-                        float balance_2 = getIntInput();
-                        admin.addSavingsAccount(custID_2, balance_2);
-                        break;
-                    default:
-                        System.out.println("invalid input");
-                        break;
-                }
-                break;
-
-            // Remove account from existing customer
-            case 3:
-                System.out.println("Enter AccountID to be removed: ");
-                int acctID = getIntInput();
-                admin.removeAccount(acctID);
-                break;
-
-            // Remove existing customer from system
-            case 4:
-                System.out.println("Enter CustomerID to be removed: ");
-                int custID_3 = getIntInput();
-                admin.removeCustomer(custID_3);
-                break;
-
-            // Add loan to existing customer
-            case 5:
-                System.out.println("Enter a CustomerID for the loan: ");
-                int custID_4 = getIntInput();
-                System.out.println("Enter a loan amount: ");
-                int loanAmount = getIntInput();
-                admin.addLoan(custID_4, loanAmount);
-                break;
-
-
-            // Show account details
-            case 6:
-                System.out.println("Enter an AccountID: ");
-                int accountID = getIntInput();
-                admin.printAccountDetails(accountID);
-                break;
-
-            // Show loan details
-            case 7:
-                System.out.println("Enter a LoanID: ");
-                int loanID = getIntInput();
-                admin.printLoanDetails(loanID);
-                break;
-
-            // Apply interest rates
-            case 8:
-                System.out.println("Enter a LoanID: ");
-                int loanID2 = getIntInput();
-                Loan loan = admin.findLoan(loanID2);
-                loan.applyInterestRates();
-                admin.printLoanDetails(loanID2);
-                break;
-
-            //etc.
-            default:
-                System.out.println("Invalid action.");
-                break;
-        }
-
-    }
-
+    /**
+     * The main method - launches the application.
+     * Takes in user input to select a role.
+     * @param args User input.
+     */
     public static void main(String args[])
     {
         // Load the default customers and accounts
@@ -203,11 +146,14 @@ public class Controller {
             switch(choice) {
                 case 1:
                     // Display admin prompts
-                    adminActions(admin);
+                    AdminActions adminActions = new AdminActions();
+                    adminActions.processActions(admin);
                     break;
                 case 2:
                     // Display customer prompts
-                    customerActions(admin);
+                    CustomerActions custActions = new CustomerActions();
+                    custActions.processActions(admin);
+
                     break;
                 case 3:
                     // Exit program
@@ -222,5 +168,4 @@ public class Controller {
         System.out.println("Goodbye.");
         System.exit(0);
     }
-
 }
